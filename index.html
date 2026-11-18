@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Гардероб: що вдягнути</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Onest:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef0f4;--sf:#fff;--ink:#1d2433;--mut:#667085;--ac:#3556a8;--on:#fff;--acs:#dfe6f6;--ln:#d9dde6;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12161f;--sf:#1b212d;--ink:#eef1f7;--mut:#9aa4b6;--ac:#8fa8ee;--on:#12161f;--acs:#26304a;--ln:#2b3343}}
+:root[data-theme="dark"]{--bg:#12161f;--sf:#1b212d;--ink:#eef1f7;--mut:#9aa4b6;--ac:#8fa8ee;--on:#12161f;--acs:#26304a;--ln:#2b3343}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.45 Onest,system-ui,sans-serif}
+main{max-width:520px;margin:0 auto;padding:20px 16px 110px}
+h1,.big{font-family:Unbounded,system-ui,sans-serif;font-weight:700}
+h1{font-size:24px;margin:8px 0 16px}
+h2{font-size:15px;margin:22px 0 8px;font-weight:600}
+.mut{color:var(--mut);font-size:14px}
+.card{background:var(--sf);border:1px solid var(--ln);border-radius:18px;padding:16px;margin-bottom:14px}
+.wx{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.big{font-size:48px;line-height:1}
+.btn{display:inline-block;border:0;border-radius:12px;background:var(--ac);color:var(--on);font:600 15px Onest,system-ui,sans-serif;padding:11px 16px;cursor:pointer;text-align:center}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--ln)}
+.btn.add{display:block;margin-bottom:12px;padding:14px}
+.btn:focus-visible,.chip:focus-visible,.nv:focus-visible,input:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+input[type=range]{width:100%;margin:14px 0 8px;accent-color:var(--ac)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--ln);background:transparent;color:var(--ink);border-radius:20px;padding:7px 13px;font:500 14px Onest,system-ui,sans-serif;cursor:pointer}
+.chip.on{background:var(--acs);border-color:var(--ac);color:var(--ink);font-weight:600}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+figure{margin:0;position:relative}
+figure img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:12px;display:block;background:var(--acs)}
+figcaption{font-size:12px;color:var(--mut);margin-top:4px}
+.grid figcaption{font-size:13px}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;border:1px solid var(--ln)}
+.x{position:absolute;top:4px;right:4px;width:26px;height:26px;border-radius:50%;border:0;background:rgba(0,0,0,.55);color:#fff;font-size:16px;line-height:1;cursor:pointer}
+.why{margin:4px 0 12px}
+ul{padding-left:18px;margin:6px 0}li{margin:4px 0}
+.fld{display:block;margin-bottom:14px;font-size:14px;color:var(--mut)}
+.fld input,.row input[type=text]{display:block;width:100%;margin-top:4px;padding:11px 12px;border-radius:12px;border:1px solid var(--ln);background:var(--bg);color:var(--ink);font:16px Onest,system-ui,sans-serif}
+.lb{font-size:14px;color:var(--mut);margin:12px 0 6px}
+.row{display:flex;align-items:center;gap:10px;margin:12px 0}
+#nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--sf);border-top:1px solid var(--ln);padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px));z-index:10}
+.nv{flex:1;border:0;background:none;color:var(--mut);font:600 13px Onest,system-ui,sans-serif;padding:10px 4px;border-radius:12px;cursor:pointer}
+.nv.on{color:var(--ac);background:var(--acs)}
+#sheet{display:none}
+#sheet.open{display:flex;position:fixed;inset:0;background:rgba(0,0,0,.5);align-items:flex-end;z-index:20}
+.pane{background:var(--sf);width:100%;max-width:520px;margin:0 auto;border-radius:20px 20px 0 0;padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px));max-height:92%;overflow:auto}
+.pv{width:96px;aspect-ratio:3/4;object-fit:cover;border-radius:12px;float:right;margin:0 0 8px 12px}
+.acts{display:flex;gap:10px;margin-top:16px;clear:both}.acts .btn{flex:1}
+</style>
+</head>
+<body>
+<main id="app"></main>
+<nav id="nav"><button class="nv" data-t="look" onclick="go('look')">Образ</button><button class="nv" data-t="ward" onclick="go('ward')">Гардероб</button><button class="nv" data-t="prof" onclick="go('prof')">Профіль</button></nav>
+<div id="sheet"></div>
+<script>
+var CAT={top:'Верх',bottom:'Низ',outer:'Верхній одяг',shoes:'Взуття'};
+var WL={1:'Легке',2:'Середнє',3:'Тепле'};
+var CON={clear:'Ясно',cloud:'Хмарно',rain:'Дощ',snow:'Сніг'};
+var NT={1:'вистачить легкого верху',1.5:'легкий верх без зайвих шарів',2:'середній верх або легкий шар зверху',3:'потрібен теплий шар',4:'вдягайтеся тепло, шарами',5:'дуже холодно: кілька шарів і тепла куртка'};
+var S={tab:'look',idx:0,msg:'',draft:null,profile:{a:'',h:'',w:''},items:[],wx:{t:15,c:'clear',wind:0,src:'manual'}};
+try{var sv=JSON.parse(localStorage.getItem('wd1')||'null');if(sv){S.profile=sv.profile||S.profile;S.items=sv.items||[];S.wx=sv.wx||S.wx}}catch(e){}
+function persist(){try{localStorage.setItem('wd1',JSON.stringify({profile:S.profile,items:S.items,wx:S.wx}));return true}catch(e){return false}}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function hsl(h){var r=parseInt(h.slice(1,3),16)/255,g=parseInt(h.slice(3,5),16)/255,b=parseInt(h.slice(5,7),16)/255,mx=Math.max(r,g,b),mn=Math.min(r,g,b),l=(mx+mn)/2,d=mx-mn,H=0,s=0;if(d){s=d/(1-Math.abs(2*l-1));H=mx==r?((g-b)/d)%6:mx==g?(b-r)/d+2:(r-g)/d+4;H=(H*60+360)%360}return{H:H,s:s,l:l}}
+function neu(c){return c.s<.2||c.l<.14||c.l>.88}
+function pair(a,b){a=hsl(a);b=hsl(b);if(neu(a)||neu(b))return 2;var d=Math.abs(a.H-b.H);d=Math.min(d,360-d);return d<25?2:d>150?1.5:d<60?1:-1}
+function feels(){return S.wx.t-(S.wx.wind>20?2:0)}
+function need(){var t=feels();return t>=27?1:t>=20?1.5:t>=14?2:t>=8?3:t>=0?4:5}
+function wet(){return S.wx.c=='rain'||S.wx.c=='snow'}
+function score(c){var t=c[0],b=c[1],o=c[2],s=c[3],n=need(),tt=feels(),up=t.w+(o?o.w:0),sc=-Math.abs(up-n)*3,lv=tt>=24?1:tt>=8?2:3;
+sc-=Math.abs(b.w-lv)*2;
+if(s)sc-=Math.abs(s.w-lv)*1.5;else if(S.items.some(function(i){return i.cat=='shoes'}))sc-=3;
+if(wet()){sc+=(o&&o.wp)?2:-1.5;if(s)sc+=s.wp?2:-3}
+sc+=pair(t.col,b.col)*2+(o?pair(o.col,t.col)+pair(o.col,b.col):0)+(s?pair(s.col,b.col)*.5:0);
+return sc}
+function combos(){var g=function(k){return S.items.filter(function(i){return i.cat==k})},T=g('top'),B=g('bottom'),O=[null].concat(g('outer')),H=[null].concat(g('shoes'));
+if(!T.length||!B.length)return[];var all=[];
+T.forEach(function(t){B.forEach(function(b){O.forEach(function(o){H.forEach(function(s){var c=[t,b,o,s];all.push([score(c),c])})})})});
+all.sort(function(x,y){return y[0]-x[0]});var out=[];
+for(var k=0;k<all.length;k++){var c=all[k][1];if(out.every(function(p){return p.filter(function(v,i){return v!==c[i]}).length>=2})){out.push(c);if(out.length>=8)break}}
+return out}
+function why(c){var t=Math.round(feels()),r=Math.round(t)+'°, '+CON[S.wx.c].toLowerCase()+(S.wx.wind>20?', вітер':'')+': '+NT[need()]+'.';
+var all=c.filter(Boolean);
+if(wet()&&all.every(function(i){return i.wp||i.cat=='top'||i.cat=='bottom'}))r+=' Верхній шар і взуття не промокнуть.';
+var cs=all.map(function(i){return neu(hsl(i.col))}).filter(Boolean).length;
+if(cs>=all.length-1)r+=' Нейтральна гама, тому все поєднується.';
+return r}
+function advice(){var p=S.profile,h=+p.h,w=+p.w,a=+p.a,o=[];
+if(!h||!w)return['Заповніть профіль, і підказки щодо крою стануть точнішими.'];
+var bmi=w/Math.pow(h/100,2);
+if(bmi<18.5)o.push('Шари й фактурні тканини додають об’єм: светр під пальто, трохи вільніший крій.');
+else if(bmi<25)o.push('Підійде більшість кроїв, тож можна експериментувати з посадкою.');
+else if(bmi<30)o.push('Прямий крій і вертикальні лінії (відкритий жакет, довгий кардиган) витягують силует.');
+else o.push('Обирайте тканини, що тримають форму, і прямий або трохи вільний крій. Однотонні комплекти виглядають цілісно.');
+if(h<165)o.push('Висока посадка талії й один тон зверху та знизу візуально подовжують ноги.');
+else if(h>185)o.push('Ваш зріст дозволяє довгі пальто, оверсайз і багатошаровість.');
+if(a&&a<25)o.push('Додайте один актуальний акцент: оверсайз-верх, кеди або яскравий аксесуар.');
+else if(a>=45)o.push('Класичні лінії та якісні матеріали (вовна, бавовна) завжди виглядають дорого.');
+else if(a)o.push('Стиль smart casual: один акцентний елемент, решта спокійна.');
+return o}
+function vLook(){var w=S.wx,cs=combos(),c=cs.length?cs[S.idx%cs.length]:null;
+var h='<h1>Що вдягнути</h1><section class="card"><div class="wx"><div><div class="big" id="tv">'+Math.round(w.t)+'°</div><div class="mut">'+(w.src=='auto'?'відчувається як, за геолокацією':'вказано вручну')+'</div></div><button class="btn" onclick="geo()">Погода за геолокацією</button></div><div class="mut" id="msg">'+esc(S.msg)+'</div><input type="range" min="-20" max="40" value="'+Math.round(w.t)+'" aria-label="Температура" oninput="document.getElementById(\'tv\').textContent=this.value+\'°\'" onchange="setT(this.value)"><div class="chips">';
+Object.keys(CON).forEach(function(k){h+='<button class="chip'+(w.c==k?' on':'')+'" onclick="setC(\''+k+'\')">'+CON[k]+'</button>'});
+h+='<button class="chip'+(w.wind>20?' on':'')+'" onclick="setW()">Вітряно</button></div></section>';
+if(!c){h+='<section class="card"><p style="margin-top:0">'+(S.items.length?'Для образу потрібна хоча б одна річ верху й одна низу.':'Гардероб порожній.')+' Додайте речі з фото, і я підберу комплект.</p><button class="btn" onclick="go(\'ward\')">Додати речі</button></section>'}
+else{h+='<section class="card"><div class="grid">'+c.filter(Boolean).map(function(i){return'<figure><img src="'+i.img+'" alt=""><figcaption>'+CAT[i.cat]+(i.name?': '+esc(i.name):'')+'</figcaption></figure>'}).join('')+'</div><p class="why">'+why(c)+'</p>'+(cs.length>1?'<button class="btn" onclick="S.idx++;R()">Інший варіант</button>':'')+'</section>'}
+h+='<section class="card"><h2 style="margin-top:0">Крій під вас</h2><ul>'+advice().map(function(x){return'<li>'+x+'</li>'}).join('')+'</ul></section>';
+return h}
+function vWard(){var h='<h1>Гардероб</h1><label class="btn add">Додати фото речі<input type="file" accept="image/*" hidden onchange="pick(this)"></label>';
+if(!S.items.length)h+='<p class="mut">Сфотографуйте річ на однотонному фоні, так колір визначиться точніше. Одна річ, одне фото. Знімати можна камерою або обрати з галереї.</p>';
+Object.keys(CAT).forEach(function(k){var l=S.items.filter(function(i){return i.cat==k});
+if(l.length)h+='<h2>'+CAT[k]+' <span class="mut">'+l.length+'</span></h2><div class="grid3">'+l.map(function(i){return'<figure><img src="'+i.img+'" alt=""><button class="x" aria-label="Видалити" onclick="del(\''+i.id+'\')">×</button><figcaption><i class="dot" style="background:'+i.col+'"></i>'+WL[i.w]+(i.wp?', водостійке':'')+'</figcaption></figure>'}).join('')+'</div>'});
+return h}
+function vProf(){var p=S.profile;
+return'<h1>Профіль</h1><section class="card"><label class="fld">Вік<input type="number" inputmode="numeric" value="'+esc(p.a)+'" oninput="S.profile.a=this.value;persist()"></label><label class="fld">Зріст, см<input type="number" inputmode="numeric" value="'+esc(p.h)+'" oninput="S.profile.h=this.value;persist()"></label><label class="fld">Вага, кг<input type="number" inputmode="numeric" value="'+esc(p.w)+'" oninput="S.profile.w=this.value;persist()"></label><p class="mut" style="margin:0">Дані й фото зберігаються лише у вашому браузері.</p></section><button class="btn ghost" onclick="reset()">Очистити всі дані</button>'}
+function chip(map,key,cur){return Object.keys(map).map(function(k){return'<button class="chip'+(k==cur?' on':'')+'" onclick="dr(\''+key+'\',\''+k+'\')">'+map[k]+'</button>'}).join('')}
+function sheet(){var d=S.draft,e=document.getElementById('sheet');
+if(!d){e.innerHTML='';e.className='';return}
+e.className='open';
+e.innerHTML='<div class="pane"><img class="pv" src="'+d.img+'" alt=""><label class="fld">Назва (необов’язково)<input value="'+esc(d.name)+'" oninput="S.draft.name=this.value"></label><div class="lb">Тип</div><div class="chips">'+chip(CAT,'cat',d.cat)+'</div><div class="lb">Теплота</div><div class="chips">'+chip(WL,'w',d.w)+'</div><label class="row"><input type="checkbox"'+(d.wp?' checked':'')+' onchange="S.draft.wp=this.checked"> Водостійке</label><label class="row">Колір <input type="color" value="'+d.col+'" onchange="S.draft.col=this.value"></label><div class="acts"><button class="btn" onclick="save()">Зберегти річ</button><button class="btn ghost" onclick="S.draft=null;R()">Скасувати</button></div></div>'}
+function R(){document.getElementById('app').innerHTML=({look:vLook,ward:vWard,prof:vProf})[S.tab]();
+document.querySelectorAll('#nav button').forEach(function(b){b.classList.toggle('on',b.dataset.t==S.tab)});sheet()}
+function go(t){S.tab=t;S.idx=0;R();window.scrollTo(0,0)}
+function setT(v){S.wx.t=+v;S.wx.src='manual';S.idx=0;persist();R()}
+function setC(k){S.wx.c=k;S.idx=0;persist();R()}
+function setW(){S.wx.wind=S.wx.wind>20?0:25;S.idx=0;persist();R()}
+function dr(k,v){S.draft[k]=k=='w'?+v:v;sheet()}
+function del(id){S.items=S.items.filter(function(i){return i.id!=id});persist();R()}
+function reset(){if(confirm('Видалити всі речі та дані профілю?')){S.items=[];S.profile={a:'',h:'',w:''};persist();R()}}
+function save(){var d=S.draft;S.items.push(d);if(!persist()){S.items.pop();alert('Не вистачає місця у сховищі браузера. Видаліть кілька речей і спробуйте ще раз.');return}S.draft=null;S.tab='ward';R()}
+function hex(r,g,b){return'#'+[r,g,b].map(function(v){return Math.round(v).toString(16).padStart(2,'0')}).join('')}
+function shrink(f){return new Promise(function(res,rej){var fr=new FileReader();fr.onload=function(){var im=new Image();im.onload=function(){
+var k=Math.min(1,300/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.max(1,im.width*k|0);c.height=Math.max(1,im.height*k|0);
+var x=c.getContext('2d');x.drawImage(im,0,0,c.width,c.height);
+var d=x.getImageData(c.width*.3|0,c.height*.3|0,Math.max(1,c.width*.4|0),Math.max(1,c.height*.4|0)).data,R=0,G=0,B=0,n=0;
+for(var i=0;i<d.length;i+=4){R+=d[i];G+=d[i+1];B+=d[i+2];n++}
+res({img:c.toDataURL('image/jpeg',.72),col:hex(R/n,G/n,B/n)})};im.onerror=rej;im.src=fr.result};fr.onerror=rej;fr.readAsDataURL(f)})}
+function pick(i){var f=i.files[0];if(!f)return;
+shrink(f).then(function(r){S.draft={id:'i'+Date.now(),img:r.img,col:r.col,cat:'top',w:2,wp:false,name:''};R()}).catch(function(){alert('Не вдалося прочитати фото. Спробуйте інше.')});i.value=''}
+function setMsg(t){S.msg=t;var m=document.getElementById('msg');if(m)m.textContent=t}
+async function geo(){var stage='geo';setMsg('Визначаю місцезнаходження…');
+try{var pos=await new Promise(function(r,j){if(!navigator.geolocation)return j();navigator.geolocation.getCurrentPosition(r,j,{timeout:8000})});
+stage='net';var u='https://api.open-meteo.com/v1/forecast?latitude='+pos.coords.latitude+'&longitude='+pos.coords.longitude+'&current=apparent_temperature,weather_code,wind_speed_10m&timezone=auto';
+var j=(await (await fetch(u)).json()).current,cd=j.weather_code,c=(cd>=71&&cd<=77)||cd==85||cd==86?'snow':(cd>=51&&cd<=67)||(cd>=80&&cd<=82)||cd>=95?'rain':cd>=3?'cloud':'clear';
+S.wx={t:j.apparent_temperature,c:c,wind:j.wind_speed_10m,src:'auto'};S.msg='';S.idx=0;persist();R()}
+catch(e){setMsg(stage=='geo'?'Немає доступу до геолокації. Вкажіть температуру та погоду вручну нижче.':'Сервіс погоди тут недоступний. Вкажіть температуру та погоду вручну нижче.')}}
+R();
+</script>
+</body>
+</html>
